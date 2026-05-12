@@ -44,20 +44,11 @@ Generated files are written to `output/` as `book_000001.wav`,
 ## Flow
 
 ```bash
-book_name=book
-pandoc input/$book_name.epub -t markdown_strict -o input/$book_name.md
-
-bta convert input/$book_name.md
-
-for f in output/$book_name_*.wav; do
-    echo "file '$PWD/$f'"
-done > output/$book_name.txt
-ffmpeg -f concat -safe 0 -i output/$book_name.txt \
-       -c:a libmp3lame -q:a 2 \
-       output/$book_name.mp3
-
-ffplay output/$book_name.mp3
+scripts/flow.sh book
+scripts/flow.sh book --no-play
 ```
+
+See [scripts/flow.sh](scripts/flow.sh) for the full EPUB-to-MP3 workflow.
 
 ## References
 
