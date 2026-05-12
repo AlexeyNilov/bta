@@ -1,2 +1,0 @@
-file '/home/lexa/an/git/bta/output/test_000001.wav'
-file '/home/lexa/an/git/bta/output/test_000002.wav'

@@ -11,7 +11,7 @@ __pycache__/
 .vscode/
 dist/
 build/
-output/*.wav
+output/*
 input/*.md
 input/*.pdf
 input/*.epub
