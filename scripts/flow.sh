@@ -118,7 +118,7 @@ for wav_file in "${wav_files[@]}"; do
 done
 
 echo "Combining WAV chunks into MP3: $output_mp3"
-ffmpeg -f concat -safe 0 -i "$concat_list" \
+ffmpeg -y -f concat -safe 0 -i "$concat_list" \
     -c:a libmp3lame -q:a 2 \
     "$output_mp3"
 

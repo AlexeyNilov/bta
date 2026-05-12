@@ -44,6 +44,7 @@ class FakeWavfileModule:
 
 def test_pocket_tts_synthesizer_loads_model_once_and_caches_voice_state(monkeypatch):
     FakeTTSModel.load_calls = 0
+    monkeypatch.delenv("HF_HUB_OFFLINE", raising=False)
     monkeypatch.setattr("bta.pocket_tts.TTSModel", FakeTTSModel)
 
     synthesizer = PocketTtsSynthesizer()
@@ -59,6 +60,18 @@ def test_pocket_tts_synthesizer_loads_model_once_and_caches_voice_state(monkeypa
     ]
     assert first_audio == "audio for First chunk."
     assert second_audio == "audio for Second chunk."
+    assert synthesizer.environ["HF_HUB_OFFLINE"] == "1"
+
+
+def test_pocket_tts_synthesizer_preserves_explicit_huggingface_offline_setting(monkeypatch):
+    FakeTTSModel.load_calls = 0
+    monkeypatch.setenv("HF_HUB_OFFLINE", "0")
+    monkeypatch.setattr("bta.pocket_tts.TTSModel", FakeTTSModel)
+
+    synthesizer = PocketTtsSynthesizer()
+
+    assert FakeTTSModel.load_calls == 1
+    assert synthesizer.environ["HF_HUB_OFFLINE"] == "0"
 
 
 def test_pocket_tts_synthesizer_loads_separate_voice_states(monkeypatch):

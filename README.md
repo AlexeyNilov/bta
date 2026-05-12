@@ -31,6 +31,10 @@ BTA_VOICE=alba
 `BTA_CHUNK_TARGET_CHARS` must be a positive integer. `BTA_VOICE` is passed to
 Pocket TTS and defaults to `alba`.
 
+`bta` sets `HF_HUB_OFFLINE=1` by default before loading Pocket TTS so cached
+models do not trigger Hugging Face network checks on every run. For the first
+model download or a refresh, run with `HF_HUB_OFFLINE=0`.
+
 ## Usage
 
 Convert a local Markdown file:
