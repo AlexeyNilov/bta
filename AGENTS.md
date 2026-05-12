@@ -40,7 +40,7 @@ Your job is to help the user think better, and to write production ready code. O
 - Propose a short implementation plan for non-trivial changes.
 
 ## Code Quality
-- Write code as if it will be production-reviewed by a senior Go developer.
+- Write code as if it will be production-reviewed by a senior Python developer.
 - Prefer small, focused functions (<= 20 lines).
 - Single responsibility per function/module.
 - No mixed concerns; separate business logic, I/O, and logging.
