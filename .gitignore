@@ -12,3 +12,6 @@ __pycache__/
 dist/
 build/
 output/*.wav
+input/*.md
+input/*.pdf
+input/*.epub
