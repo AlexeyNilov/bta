@@ -55,7 +55,7 @@ Implementation plan:
      proves significant.
 
 5. Control CPU oversubscription.
-   - Benchmark `BTA_TTS_WORKERS=2`, `4`, and `8`.
+   - Benchmark `BTA_TTS_WORKERS=2`, `4`, and `6`.
    - If Pocket TTS uses PyTorch CPU threads, consider setting per-worker torch
      threads explicitly, for example `max(1, cpu_count // workers)`.
    - Do not add this tuning until measured; wrong thread limits can slow down
