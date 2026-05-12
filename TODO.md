@@ -66,7 +66,7 @@ Implementation plan:
    - Run `make lint`.
    - Run `make mypy`.
    - Run a real conversion benchmark on `input/test.md` with worker counts `1`,
-     `2`, `4`, and `8`. 
+     `2`, `4`, and `6`. 
 
 Open design choice:
 
