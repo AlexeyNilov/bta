@@ -36,10 +36,15 @@ def load_environment(
 class Config:
     """Configuration sourced from environment variables."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Read settings from the current process environment."""
 
         self.log_level = self.get_log_level("LOG_LEVEL", default=logging.ERROR)
+        self.chunk_target_chars = self.get_positive_int(
+            "BTA_CHUNK_TARGET_CHARS",
+            default=2000,
+        )
+        self.voice = self.get_optional_string("BTA_VOICE", default="alba")
 
     def get_required_env(self, key: str) -> str:
         value = os.getenv(key)
@@ -58,6 +63,28 @@ class Config:
             raise ConfigError(f"Unsupported {key} {value!r}; expected one of: {supported}")
 
         return SUPPORTED_LOG_LEVELS[normalized]
+
+    def get_positive_int(self, key: str, default: int) -> int:
+        value = os.getenv(key)
+        if not value or not value.strip():
+            return default
+
+        normalized = value.strip()
+        if not normalized.isdecimal():
+            raise ConfigError(f"{key} must be a positive integer")
+
+        parsed = int(normalized)
+        if parsed < 1:
+            raise ConfigError(f"{key} must be a positive integer")
+
+        return parsed
+
+    def get_optional_string(self, key: str, default: str) -> str:
+        value = os.getenv(key)
+        if not value or not value.strip():
+            return default
+
+        return value.strip()
 
 
 def load_config() -> Config:

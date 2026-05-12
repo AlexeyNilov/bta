@@ -1,5 +1,5 @@
-from pocket_tts import TTSModel
 import scipy.io.wavfile
+from pocket_tts import TTSModel
 
 tts_model = TTSModel.load_model()
 voice_state = tts_model.get_state_for_audio_prompt(
