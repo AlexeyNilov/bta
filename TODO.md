@@ -27,17 +27,17 @@ Implementation plan for the first Markdown-to-WAV audiobook workflow.
 
 ## Phase 2: Text Cleanup and Chunking
 
-* [ ] Add tests for removing single-line and multiline embedded HTML tags.
-* [ ] Add tests for preserving word spacing when HTML occurs between words, such
+* [x] Add tests for removing single-line and multiline embedded HTML tags.
+* [x] Add tests for preserving word spacing when HTML occurs between words, such
       as `This <span ...></span>mission` becoming `This mission`.
-* [ ] Add tests showing non-HTML Markdown content is preserved for now.
-* [ ] Implement a text cleanup module for HTML removal and whitespace
+* [x] Add tests showing non-HTML Markdown content is preserved for now.
+* [x] Implement a text cleanup module for HTML removal and whitespace
       normalization.
-* [ ] Add tests for paragraph-aware chunking with a target character count.
-* [ ] Add tests proving chunking never splits a sentence.
-* [ ] Add tests for a single sentence longer than the target becoming one
+* [x] Add tests for paragraph-aware chunking with a target character count.
+* [x] Add tests proving chunking never splits a sentence.
+* [x] Add tests for a single sentence longer than the target becoming one
       oversized chunk.
-* [ ] Implement sentence-boundary-aware chunking.
+* [x] Implement sentence-boundary-aware chunking.
 
 ## Phase 3: Output Paths and State
 

@@ -15,3 +15,5 @@ output/*.wav
 input/*.md
 input/*.pdf
 input/*.epub
+.agents/
+.codex/
