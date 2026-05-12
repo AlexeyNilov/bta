@@ -57,14 +57,14 @@ Implementation plan for the first Markdown-to-WAV audiobook workflow.
 
 ## Phase 4: Conversion Orchestration
 
-* [ ] Define small protocols/interfaces for speech synthesis and WAV writing.
-* [ ] Add tests for fail-fast behavior on chunk synthesis or write failure.
-* [ ] Add tests that successful WAV files and state remain after failure.
-* [ ] Add tests that resume skips successful chunks and continues with the next
+* [x] Define small protocols/interfaces for speech synthesis and WAV writing.
+* [x] Add tests for fail-fast behavior on chunk synthesis or write failure.
+* [x] Add tests that successful WAV files and state remain after failure.
+* [x] Add tests that resume skips successful chunks and continues with the next
       chunk.
-* [ ] Implement the conversion service using injected synthesizer and writer
+* [x] Implement the conversion service using injected synthesizer and writer
       dependencies.
-* [ ] Make overwrite behavior explicit in logs or status output.
+* [x] Make overwrite behavior explicit in logs or status output.
 
 ## Phase 5: Pocket TTS Integration
 
