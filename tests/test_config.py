@@ -2,7 +2,7 @@ import logging
 
 import pytest
 
-from mcp_stdio_python_template.config import load_config
+from bta.config import load_config
 
 
 def test_load_config_reads_log_level_from_dotenv_file(monkeypatch, tmp_path):

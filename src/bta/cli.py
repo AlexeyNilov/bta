@@ -2,35 +2,16 @@ from __future__ import annotations
 
 import logging
 import sys
-from collections.abc import Callable, Sequence
+from collections.abc import Sequence
 from importlib.metadata import PackageNotFoundError, version
-from typing import Literal, Protocol
 
-from mcp_stdio_python_template.config import load_config
-from mcp_stdio_python_template.server import build_server
+from bta.config import load_config
 
-PACKAGE_NAME = "mcp-stdio-python-template"
-
-
-class RunnableServer(Protocol):
-    def run(
-        self,
-        transport: Literal["stdio", "sse", "streamable-http"] = "stdio",
-        mount_path: str | None = None,
-    ) -> None:
-        raise NotImplementedError
-
-
-ServerFactory = Callable[[], RunnableServer]
-
-
-def default_server_factory() -> RunnableServer:
-    return build_server()
+PACKAGE_NAME = "bta"
 
 
 def main(
     argv: Sequence[str] | None = None,
-    server_factory: ServerFactory = default_server_factory,
 ) -> int:
     args = list(argv if argv is not None else sys.argv[1:])
     if wants_help(args):
@@ -46,9 +27,8 @@ def main(
     try:
         config = load_config()
         logging.basicConfig(level=config.log_level)
-        server_factory().run("stdio")
     except Exception as error:
-        sys.stderr.write(f"mcp-stdio-python-template failed to start: {error}\n")
+        sys.stderr.write(f"bta failed to start: {error}\n")
         return 1
     return 0
 
@@ -69,8 +49,8 @@ def help_text() -> str:
         f"{PACKAGE_NAME}\n\n"
         "Runs a minimal stdio MCP server.\n\n"
         "Usage:\n"
-        "  mcp-stdio-python-template\n"
-        "  mcp-stdio-python-template --version\n"
+        "  bta\n"
+        "  bta --version\n"
     )
 
 

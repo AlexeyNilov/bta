@@ -3,9 +3,9 @@ requires = ["setuptools>=69", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "mcp-stdio-python-template"
-version = "0.1.3"
-description = "Minimal Python stdio MCP server template."
+name = "bta"
+version = "0.0.1"
+description = "Book to Audio converter"
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "CC0-1.0" }
@@ -22,7 +22,6 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 dependencies = [
-    "mcp>=1.26,<2",
     "python-dotenv>=1,<2",
 ]
 
@@ -34,7 +33,7 @@ dev = [
 ]
 
 [project.scripts]
-mcp-stdio-python-template = "mcp_stdio_python_template.cli:main"
+bta = "bta.cli:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]

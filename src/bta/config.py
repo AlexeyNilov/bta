@@ -5,7 +5,7 @@ import os
 
 from dotenv import find_dotenv, load_dotenv
 
-from mcp_stdio_python_template.exceptions import ConfigError
+from bta.exceptions import ConfigError
 
 SUPPORTED_LOG_LEVELS = {
     "DEBUG": logging.DEBUG,
