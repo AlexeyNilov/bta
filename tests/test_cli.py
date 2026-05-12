@@ -1,7 +1,7 @@
 from pathlib import Path
 
 import bta.cli
-from bta.cli import main
+from bta.cli import StderrProgressReporter, main
 from bta.conversion import ConversionRequest, ConversionResult
 
 
@@ -102,10 +102,12 @@ def test_convert_wires_configured_conversion_dependencies(monkeypatch, tmp_path)
         request: ConversionRequest,
         synthesizer: object,
         writer: object,
+        progress_reporter: object | None = None,
     ) -> ConversionResult:
         calls["request"] = request
         calls["synthesizer"] = synthesizer
         calls["writer"] = writer
+        calls["progress_reporter"] = progress_reporter
         return ConversionResult(
             total_chunks=1,
             written_chunks=1,
@@ -129,6 +131,16 @@ def test_convert_wires_configured_conversion_dependencies(monkeypatch, tmp_path)
     assert isinstance(calls["synthesizer"], TrackingPocketTtsSynthesizer)
     assert isinstance(calls["writer"], TrackingScipyWavWriter)
     assert calls["sample_rate"] == 24_000
+    assert isinstance(calls["progress_reporter"], StderrProgressReporter)
+
+
+def test_stderr_progress_reporter_prints_current_chunk_of_total(capsys):
+    reporter = StderrProgressReporter()
+
+    reporter.report(current_chunk=2, total_chunks=5)
+
+    captured = capsys.readouterr()
+    assert captured.err == "Converting chunk 2 of 5\n"
 
 
 class FakePocketTtsSynthesizer:
@@ -144,6 +156,7 @@ def fake_convert_markdown(
     request: ConversionRequest,
     synthesizer: object,
     writer: object,
+    progress_reporter: object | None = None,
 ) -> ConversionResult:
     return ConversionResult(
         total_chunks=1,

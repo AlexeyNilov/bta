@@ -61,6 +61,7 @@ def convert(args: Sequence[str]) -> int:
         ),
         synthesizer=synthesizer,
         writer=writer,
+        progress_reporter=StderrProgressReporter(),
     )
     return 0
 
@@ -89,6 +90,11 @@ def parse_input_path(args: Sequence[str]) -> Path:
 
 class CliUsageError(ValueError):
     pass
+
+
+class StderrProgressReporter:
+    def report(self, current_chunk: int, total_chunks: int) -> None:
+        sys.stderr.write(f"Converting chunk {current_chunk} of {total_chunks}\n")
 
 
 def wants_help(args: Sequence[str]) -> bool:

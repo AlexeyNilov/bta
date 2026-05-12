@@ -95,5 +95,5 @@ Implementation plan for the first Markdown-to-WAV audiobook workflow.
 
 ## Phase 7
 
-* [ ] Add progress indicator
+* [x] Add progress indicator
 * [ ] Review flow script in README.md

@@ -31,6 +31,28 @@ class FakeWavWriter:
         path.write_bytes(audio)
 
 
+class RecordingProgressReporter:
+    def __init__(self) -> None:
+        self.calls: list[tuple[int, int]] = []
+
+    def report(self, current_chunk: int, total_chunks: int) -> None:
+        self.calls.append((current_chunk, total_chunks))
+
+
+def test_convert_markdown_reports_current_chunk_of_total_chunks(tmp_path):
+    input_path = write_input(tmp_path, "First sentence.\n\nSecond sentence.")
+    progress_reporter = RecordingProgressReporter()
+
+    convert_markdown(
+        request_for(input_path, tmp_path),
+        synthesizer=FakeSynthesizer(),
+        writer=FakeWavWriter(),
+        progress_reporter=progress_reporter,
+    )
+
+    assert progress_reporter.calls == [(1, 2), (2, 2)]
+
+
 def test_convert_markdown_stops_on_synthesis_failure_and_keeps_successful_output(tmp_path):
     input_path = write_input(tmp_path, "First sentence.\n\nSecond sentence.")
     request = request_for(input_path, tmp_path)
@@ -96,6 +118,35 @@ def test_convert_markdown_resumes_by_skipping_successful_chunks(tmp_path):
     state = load_state(output_dir / "book.state.json")
     assert state.last_successful_chunk == 2
     assert state.completed
+
+
+def test_convert_markdown_resume_reports_only_chunks_that_are_processed(tmp_path):
+    input_path = write_input(tmp_path, "First sentence.\n\nSecond sentence.")
+    output_dir = tmp_path / "output"
+    output_dir.mkdir()
+    (output_dir / "book_000001.wav").write_bytes(b"existing audio")
+    save_state(
+        output_dir / "book.state.json",
+        build_conversion_state(
+            input_path=input_path,
+            input_sha256=hash_file(input_path),
+            chunk_target_chars=20,
+            voice="alba",
+            last_successful_chunk=1,
+            total_chunks=2,
+            completed=False,
+        ),
+    )
+    progress_reporter = RecordingProgressReporter()
+
+    convert_markdown(
+        request_for(input_path, tmp_path),
+        synthesizer=FakeSynthesizer(),
+        writer=FakeWavWriter(),
+        progress_reporter=progress_reporter,
+    )
+
+    assert progress_reporter.calls == [(2, 2)]
 
 
 def test_convert_markdown_logs_fresh_overwrite_behavior(caplog, tmp_path):

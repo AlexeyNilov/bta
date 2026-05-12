@@ -30,6 +30,11 @@ class WavWriter(Protocol):
         pass
 
 
+class ProgressReporter(Protocol):
+    def report(self, current_chunk: int, total_chunks: int) -> None:
+        pass
+
+
 @dataclass(frozen=True)
 class ConversionRequest:
     input_path: Path
@@ -51,6 +56,7 @@ def convert_markdown(
     request: ConversionRequest,
     synthesizer: SpeechSynthesizer,
     writer: WavWriter,
+    progress_reporter: ProgressReporter | None = None,
 ) -> ConversionResult:
     source_text = request.input_path.read_text(encoding="utf-8")
     chunks = chunk_text(clean_markdown_text(source_text), request.chunk_target_chars)
@@ -70,6 +76,7 @@ def convert_markdown(
         start_chunk_number,
         synthesizer,
         writer,
+        progress_reporter,
     )
     return ConversionResult(
         total_chunks=len(chunks),
@@ -111,9 +118,12 @@ def synthesize_chunks(
     start_chunk_number: int,
     synthesizer: SpeechSynthesizer,
     writer: WavWriter,
+    progress_reporter: ProgressReporter | None,
 ) -> int:
     written_chunks = 0
     for chunk_number in range(start_chunk_number, len(chunks) + 1):
+        if progress_reporter is not None:
+            progress_reporter.report(chunk_number, len(chunks))
         chunk_text_value = chunks[chunk_number - 1]
         audio = synthesizer.synthesize(chunk_text_value, request.voice)
         writer.write(plan.wav_paths[chunk_number - 1], audio)
