@@ -41,18 +41,18 @@ Implementation plan for the first Markdown-to-WAV audiobook workflow.
 
 ## Phase 3: Output Paths and State
 
-* [ ] Add tests for default output folder `output/`, create-if-missing, and
+* [x] Add tests for default output folder `output/`, create-if-missing, and
       reuse-if-existing behavior.
-* [ ] Add tests for output names based on input stem and six-digit one-based
+* [x] Add tests for output names based on input stem and six-digit one-based
       ordering, such as `input_000001.wav`.
-* [ ] Add tests for fresh conversions overwriting generated files.
-* [ ] Define a versioned state data model for `<input-stem>.state.json`.
-* [ ] Add tests for state contents: input path, input SHA-256,
+* [x] Add tests for fresh conversions overwriting generated files.
+* [x] Define a versioned state data model for `<input-stem>.state.json`.
+* [x] Add tests for state contents: input path, input SHA-256,
       `BTA_CHUNK_TARGET_CHARS`, `BTA_VOICE`, last successful chunk, total chunks,
       and completion status.
-* [ ] Add tests for safe resume from a matching incomplete state file.
-* [ ] Add tests for rejecting resume when input hash or relevant config differs.
-* [ ] Implement output path planning, input hashing, state load/save, and resume
+* [x] Add tests for safe resume from a matching incomplete state file.
+* [x] Add tests for rejecting resume when input hash or relevant config differs.
+* [x] Implement output path planning, input hashing, state load/save, and resume
       validation.
 
 ## Phase 4: Conversion Orchestration
