@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "bta"
-version = "0.4.0"
+version = "0.5.0"
 description = "Book to Audio converter"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -23,7 +23,8 @@ classifiers = [
 ]
 dependencies = [
     "python-dotenv>=1,<2",
-    "pocket-tts"
+    "pocket-tts",
+    "scipy>=1.5.0",
 ]
 
 [project.optional-dependencies]

@@ -3,7 +3,7 @@ from __future__ import annotations
 import logging
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Protocol
+from typing import Any, Protocol
 
 from bta.output import (
     OutputPlan,
@@ -21,12 +21,12 @@ logger = logging.getLogger(__name__)
 
 
 class SpeechSynthesizer(Protocol):
-    def synthesize(self, text: str, voice: str) -> bytes:
+    def synthesize(self, text: str, voice: str) -> Any:
         pass
 
 
 class WavWriter(Protocol):
-    def write(self, path: Path, audio: bytes) -> None:
+    def write(self, path: Path, audio: Any) -> None:
         pass
 
 

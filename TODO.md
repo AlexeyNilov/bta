@@ -68,14 +68,14 @@ Implementation plan for the first Markdown-to-WAV audiobook workflow.
 
 ## Phase 5: Pocket TTS Integration
 
-* [ ] Add a thin Pocket TTS adapter that loads `TTSModel` once per conversion.
-* [ ] Add adapter-level tests with fakes or mocks for `TTSModel.load_model`,
+* [x] Add a thin Pocket TTS adapter that loads `TTSModel` once per conversion.
+* [x] Add adapter-level tests with fakes or mocks for `TTSModel.load_model`,
       `get_state_for_audio_prompt`, and `generate_audio`.
-* [ ] Add a WAV writer using `scipy.io.wavfile.write` or the writer expected by
+* [x] Add a WAV writer using `scipy.io.wavfile.write` or the writer expected by
       Pocket TTS runtime dependencies.
-* [ ] Wire the CLI `convert` command to the conversion service, Pocket TTS
+* [x] Wire the CLI `convert` command to the conversion service, Pocket TTS
       adapter, and WAV writer.
-* [ ] Decide whether `scipy` must be an explicit project dependency after
+* [x] Decide whether `scipy` must be an explicit project dependency after
       confirming Pocket TTS dependency behavior.
 
 ## Phase 6: Documentation and Packaging

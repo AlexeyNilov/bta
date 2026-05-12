@@ -7,6 +7,8 @@ from importlib.metadata import PackageNotFoundError, version
 from pathlib import Path
 
 from bta.config import load_config
+from bta.conversion import ConversionRequest, convert_markdown
+from bta.pocket_tts import PocketTtsSynthesizer, ScipyWavWriter
 
 PACKAGE_NAME = "bta"
 
@@ -44,10 +46,21 @@ def convert(args: Sequence[str]) -> int:
         return 1
 
     logging.info(
-        "Accepted conversion request for %s with target chunk size %s and voice %s",
+        "Starting conversion for %s with target chunk size %s and voice %s",
         input_path,
         config.chunk_target_chars,
         config.voice,
+    )
+    synthesizer = PocketTtsSynthesizer()
+    writer = ScipyWavWriter(synthesizer.sample_rate)
+    convert_markdown(
+        ConversionRequest(
+            input_path=input_path,
+            chunk_target_chars=config.chunk_target_chars,
+            voice=config.voice,
+        ),
+        synthesizer=synthesizer,
+        writer=writer,
     )
     return 0
 
