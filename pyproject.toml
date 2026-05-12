@@ -23,6 +23,7 @@ classifiers = [
 ]
 dependencies = [
     "python-dotenv>=1,<2",
+    "pocket-tts"
 ]
 
 [project.optional-dependencies]

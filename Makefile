@@ -25,4 +25,4 @@ mypy:
 	$(MYPY) src tests
 
 format:
-	$(RUFF) format --check .
+	$(RUFF) format

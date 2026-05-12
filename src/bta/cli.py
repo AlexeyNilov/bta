@@ -45,13 +45,7 @@ def package_version() -> str:
 
 
 def help_text() -> str:
-    return (
-        f"{PACKAGE_NAME}\n\n"
-        "Runs a minimal stdio MCP server.\n\n"
-        "Usage:\n"
-        "  bta\n"
-        "  bta --version\n"
-    )
+    return f"{PACKAGE_NAME}\n\nRuns a minimal stdio MCP server.\n\nUsage:\n  bta\n  bta --version\n"
 
 
 if __name__ == "__main__":
