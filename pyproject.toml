@@ -4,22 +4,24 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "bta"
-version = "0.5.0"
+version = "0.6.0"
 description = "Book to Audio converter"
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "CC0-1.0" }
-keywords = ["mcp", "stdio", "template"]
+keywords = ["audiobook", "markdown", "tts", "wav"]
 classifiers = [
     "Development Status :: 3 - Alpha",
-    "Intended Audience :: Developers",
+    "Environment :: Console",
+    "Intended Audience :: End Users/Desktop",
     "License :: CC0 1.0 Universal (CC0 1.0) Public Domain Dedication",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
-    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Multimedia :: Sound/Audio :: Speech",
+    "Topic :: Text Processing :: Markup :: Markdown",
 ]
 dependencies = [
     "python-dotenv>=1,<2",

@@ -1,0 +1,10 @@
+{
+  "chunk_target_chars": 2000,
+  "completed": true,
+  "input_path": "/home/lexa/an/git/bta/input/test.md",
+  "input_sha256": "c7d9140837d24b99aa5d0d56864aaedcfa17e1c250eda0b1ef7d48a61b9d6e54",
+  "last_successful_chunk": 2,
+  "schema_version": 1,
+  "total_chunks": 2,
+  "voice": "alba"
+}

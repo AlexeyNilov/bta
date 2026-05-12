@@ -80,15 +80,20 @@ Implementation plan for the first Markdown-to-WAV audiobook workflow.
 
 ## Phase 6: Documentation and Packaging
 
-* [ ] Update `README.md` with installation, `.env`, and `bta convert <input.md>`
+* [x] Update `README.md` with installation, `.env`, and `bta convert <input.md>`
       usage.
-* [ ] Add or update `.env.example` with only `BTA_CHUNK_TARGET_CHARS` and
+* [x] Add or update `.env.example` with only `BTA_CHUNK_TARGET_CHARS` and
       `BTA_VOICE`.
-* [ ] Update `pyproject.toml` metadata to remove leftover MCP/template keywords
+* [x] Update `pyproject.toml` metadata to remove leftover MCP/template keywords
       and classifiers.
-* [ ] Bump `pyproject.toml` version using semantic versioning after behavior is
+* [x] Bump `pyproject.toml` version using semantic versioning after behavior is
       implemented.
-* [ ] Run `make format`.
-* [ ] Run `make lint`.
-* [ ] Run `make mypy`.
-* [ ] Run `make test`.
+* [x] Run `make format`.
+* [x] Run `make lint`.
+* [x] Run `make mypy`.
+* [x] Run `make test`.
+
+## Phase 7
+
+* [ ] Add progress indicator
+* [ ] Review flow script in README.md
