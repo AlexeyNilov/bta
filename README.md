@@ -6,6 +6,8 @@ chunks using Pocket TTS.
 ## Installation
 
 ```bash
+git clone https://github.com/AlexeyNilov/bta.git
+cd bta
 python -m venv .venv
 . .venv/bin/activate
 pip install -e .

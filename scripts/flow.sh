@@ -3,14 +3,16 @@ set -euo pipefail
 
 usage() {
     cat <<'USAGE'
-Usage: scripts/flow.sh <book-name> [--no-play]
+Usage: scripts/flow.sh <book-name> [--skip-epub-conversion] [--no-play]
 
 Runs the full EPUB-to-MP3 flow:
   input/<book-name>.epub -> input/<book-name>.md -> output/<book-name>_*.wav -> output/<book-name>.mp3
 
 Examples:
   scripts/flow.sh book
+  scripts/flow.sh book --skip-epub-conversion
   scripts/flow.sh book --no-play
+  scripts/flow.sh book --skip-epub-conversion --no-play
 USAGE
 }
 
@@ -28,30 +30,36 @@ concat_escape() {
     printf '%s' "$value"
 }
 
-if [[ $# -lt 1 || $# -gt 2 ]]; then
+if [[ $# -lt 1 ]]; then
     usage >&2
     exit 2
 fi
 
 book_name=$1
 play_after_conversion=true
+convert_epub=true
 
-if [[ $# -eq 2 ]]; then
-    case "$2" in
+shift
+while [[ $# -gt 0 ]]; do
+    case "$1" in
         --no-play)
             play_after_conversion=false
+            ;;
+        --skip-epub-conversion)
+            convert_epub=false
             ;;
         -h|--help)
             usage
             exit 0
             ;;
         *)
-            echo "Unknown option: $2" >&2
+            echo "Unknown option: $1" >&2
             usage >&2
             exit 2
             ;;
     esac
-fi
+    shift
+done
 
 script_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
 project_root=$(cd -- "$script_dir/.." && pwd)
@@ -63,12 +71,19 @@ output_dir="output"
 concat_list="$output_dir/$book_name.txt"
 output_mp3="$output_dir/$book_name.mp3"
 
-if [[ ! -f "$input_epub" ]]; then
+if [[ "$convert_epub" == true && ! -f "$input_epub" ]]; then
     echo "Input EPUB not found: $input_epub" >&2
     exit 1
 fi
 
-require_command pandoc
+if [[ "$convert_epub" == false && ! -f "$input_md" ]]; then
+    echo "Input Markdown not found: $input_md" >&2
+    exit 1
+fi
+
+if [[ "$convert_epub" == true ]]; then
+    require_command pandoc
+fi
 require_command bta
 require_command ffmpeg
 if [[ "$play_after_conversion" == true ]]; then
@@ -77,8 +92,12 @@ fi
 
 mkdir -p "$output_dir"
 
-echo "Converting EPUB to Markdown: $input_epub -> $input_md"
-pandoc "$input_epub" -t markdown_strict -o "$input_md"
+if [[ "$convert_epub" == true ]]; then
+    echo "Converting EPUB to Markdown: $input_epub -> $input_md"
+    pandoc "$input_epub" -t markdown_strict -o "$input_md"
+else
+    echo "Using prepared Markdown: $input_md"
+fi
 
 echo "Converting Markdown to WAV chunks: $input_md"
 bta convert "$input_md"
