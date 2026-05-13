@@ -64,3 +64,4 @@ See [scripts/flow.sh](scripts/flow.sh) for the full EPUB-to-MP3 workflow.
 * For EPUB to text conversion: https://pandoc.org/
 * For PDF to text conversion: https://github.com/run-llama/liteparse
 * TTS: https://github.com/kyutai-labs/pocket-tts
+* Voices: alba, bill_boerst, charles, eponine, jean, peter_yearsley, stuart_bell 
