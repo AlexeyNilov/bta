@@ -134,13 +134,58 @@ def test_convert_wires_configured_conversion_dependencies(monkeypatch, tmp_path)
     assert isinstance(calls["progress_reporter"], StderrProgressReporter)
 
 
+def test_convert_wires_parallel_conversion_without_parent_tts_model(monkeypatch, tmp_path):
+    input_file = tmp_path / "book.md"
+    input_file.write_text("# Book\n", encoding="utf-8")
+    monkeypatch.setenv("BTA_TTS_WORKERS", "3")
+    calls: dict[str, object] = {}
+
+    class FailingPocketTtsSynthesizer:
+        def __init__(self) -> None:
+            raise AssertionError("parent process should not load a TTS model")
+
+    def tracking_convert_markdown(
+        request: ConversionRequest,
+        synthesizer: object | None = None,
+        writer: object | None = None,
+        progress_reporter: object | None = None,
+    ) -> ConversionResult:
+        calls["request"] = request
+        calls["synthesizer"] = synthesizer
+        calls["writer"] = writer
+        calls["progress_reporter"] = progress_reporter
+        return ConversionResult(
+            total_chunks=1,
+            written_chunks=1,
+            skipped_chunks=0,
+            resumed=False,
+            completed=True,
+        )
+
+    monkeypatch.setattr(bta.cli, "PocketTtsSynthesizer", FailingPocketTtsSynthesizer)
+    monkeypatch.setattr(bta.cli, "convert_markdown", tracking_convert_markdown)
+
+    exit_code = main(["convert", str(input_file)])
+
+    assert exit_code == 0
+    assert calls["request"] == ConversionRequest(
+        input_path=input_file,
+        chunk_target_chars=2000,
+        voice="alba",
+        tts_workers=3,
+    )
+    assert calls["synthesizer"] is None
+    assert calls["writer"] is None
+    assert isinstance(calls["progress_reporter"], StderrProgressReporter)
+
+
 def test_stderr_progress_reporter_prints_current_chunk_of_total(capsys):
     reporter = StderrProgressReporter()
 
     reporter.report(current_chunk=2, total_chunks=5)
 
     captured = capsys.readouterr()
-    assert captured.err == "Converting chunk 2 of 5\n"
+    assert captured.err == "Completed chunk 2 of 5\n"
 
 
 class FakePocketTtsSynthesizer:

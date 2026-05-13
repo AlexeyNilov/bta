@@ -46,18 +46,24 @@ def convert(args: Sequence[str]) -> int:
         return 1
 
     logging.info(
-        "Starting conversion for %s with target chunk size %s and voice %s",
+        "Starting conversion for %s with target chunk size %s, voice %s, and %s TTS worker(s)",
         input_path,
         config.chunk_target_chars,
         config.voice,
+        config.tts_workers,
     )
-    synthesizer = PocketTtsSynthesizer()
-    writer = ScipyWavWriter(synthesizer.sample_rate)
+    synthesizer = None
+    writer = None
+    if config.tts_workers == 1:
+        synthesizer = PocketTtsSynthesizer()
+        writer = ScipyWavWriter(synthesizer.sample_rate)
+
     convert_markdown(
         ConversionRequest(
             input_path=input_path,
             chunk_target_chars=config.chunk_target_chars,
             voice=config.voice,
+            tts_workers=config.tts_workers,
         ),
         synthesizer=synthesizer,
         writer=writer,
@@ -94,7 +100,7 @@ class CliUsageError(ValueError):
 
 class StderrProgressReporter:
     def report(self, current_chunk: int, total_chunks: int) -> None:
-        sys.stderr.write(f"Converting chunk {current_chunk} of {total_chunks}\n")
+        sys.stderr.write(f"Completed chunk {current_chunk} of {total_chunks}\n")
 
 
 def wants_help(args: Sequence[str]) -> bool:

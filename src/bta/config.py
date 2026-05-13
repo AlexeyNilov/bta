@@ -44,6 +44,7 @@ class Config:
             "BTA_CHUNK_TARGET_CHARS",
             default=2000,
         )
+        self.tts_workers = self.get_positive_int("BTA_TTS_WORKERS", default=1)
         self.voice = self.get_optional_string("BTA_VOICE", default="alba")
 
     def get_required_env(self, key: str) -> str:

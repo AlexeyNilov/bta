@@ -61,6 +61,33 @@ def test_load_config_rejects_invalid_chunk_target_chars(monkeypatch, tmp_path, v
         load_config()
 
 
+def test_load_config_defaults_tts_workers_to_one(monkeypatch, tmp_path):
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.delenv("BTA_TTS_WORKERS", raising=False)
+
+    config = load_config()
+
+    assert config.tts_workers == 1
+
+
+def test_load_config_accepts_positive_tts_workers(monkeypatch, tmp_path):
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setenv("BTA_TTS_WORKERS", "4")
+
+    config = load_config()
+
+    assert config.tts_workers == 4
+
+
+@pytest.mark.parametrize("value", ["0", "-1", "abc", "2.5"])
+def test_load_config_rejects_invalid_tts_workers(monkeypatch, tmp_path, value):
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setenv("BTA_TTS_WORKERS", value)
+
+    with pytest.raises(ValueError, match="BTA_TTS_WORKERS"):
+        load_config()
+
+
 def test_load_config_defaults_voice_to_alba(monkeypatch, tmp_path):
     monkeypatch.chdir(tmp_path)
     monkeypatch.delenv("BTA_VOICE", raising=False)

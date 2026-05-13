@@ -25,11 +25,14 @@ Configuration is loaded from environment variables and optional `.env` files.
 
 ```bash
 BTA_CHUNK_TARGET_CHARS=2000
+BTA_TTS_WORKERS=1
 BTA_VOICE=alba
 ```
 
-`BTA_CHUNK_TARGET_CHARS` must be a positive integer. `BTA_VOICE` is passed to
-Pocket TTS and defaults to `alba`.
+`BTA_CHUNK_TARGET_CHARS` must be a positive integer. `BTA_TTS_WORKERS` controls
+how many independent Pocket TTS worker processes synthesize chunks concurrently
+and defaults to `1` to preserve sequential conversion behavior. `BTA_VOICE` is
+passed to Pocket TTS and defaults to `alba`.
 
 `bta` sets `HF_HUB_OFFLINE=1` by default before loading Pocket TTS so cached
 models do not trigger Hugging Face network checks on every run. For the first
