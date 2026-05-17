@@ -25,7 +25,7 @@ Configuration is loaded from environment variables and optional `.env` files.
 
 ```bash
 BTA_CHUNK_TARGET_CHARS=2000
-BTA_TTS_WORKERS=1
+BTA_TTS_WORKERS=4  # 4 gives the best result on 8 core CPU
 BTA_VOICE=alba
 ```
 
@@ -52,22 +52,52 @@ Generated files are written to `output/` as `book_000001.wav`,
 
 ## Flow
 
-```bash
-scripts/flow.sh book
-scripts/flow.sh book --no-play
+Think of the pipeline as three passes: extract the book into plain Markdown,
+shape the text for clean narration, then render and stitch the audio.
+
+### 1. Extract the Source Book
+
+Start by turning the original EPUB or PDF into a Markdown file under `input/`.
+Use the tool that fits the source format:
+
+```
+lit parse book.pdf --no-ocr -o input/book.md  # https://github.com/run-llama/liteparse
+pandoc book.epub -t markdown_strict -o input/book.md  # https://pandoc.org/
 ```
 
-See [scripts/flow.sh](scripts/flow.sh) for the full EPUB-to-MP3 workflow.
+### 2. Prepare the Text for Speech
 
-To merge an existing folder of WAV files into one MP3:
+Clean the extracted Markdown before synthesis. For long books, split the text
+into chapter-sized files first, then remove visual-only ebook artifacts such as
+image references, table-of-contents links, anchors, worksheet blanks, and bare
+URLs.
+
+Useful Codex skills:
+
+* `split-ebook-into-chapters`
+* `ebook-export-cleanup`
+
+The goal is not to make pretty Markdown. The goal is clean narration: text that
+sounds intentional when read aloud.
+
+### 3. Render WAV Chunks
+
+Run `bta` on the prepared Markdown file:
 
 ```bash
-scripts/merge_wavs.sh ./output
+bta convert input/book.md
 ```
 
-The merged file is written inside that folder using the folder name, for example
-`output/output.mp3`. The merge inserts 2 seconds of silence after each WAV file
-to create pauses between chapters.
+`bta` writes ordered WAV chunks to `output/` and saves conversion state so an
+interrupted matching run can resume.
+
+### 4. Merge the Audiobook
+
+When the WAV chunks are ready, merge them into a single MP3:
+
+```bash
+bash scripts/merge_wavs.sh ./output
+```
 
 ## References
 
