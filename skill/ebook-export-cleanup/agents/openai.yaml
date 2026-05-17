@@ -1,0 +1,4 @@
+interface:
+  display_name: "Ebook Export Cleanup"
+  short_description: "Clean ebook exports for speech"
+  default_prompt: "Use $ebook-export-cleanup to prepare this ebook export for text-to-speech."

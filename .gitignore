@@ -12,8 +12,6 @@ __pycache__/
 dist/
 build/
 output/*
-input/*.md
-input/*.pdf
-input/*.epub
+input/*
 .agents/
 .codex/

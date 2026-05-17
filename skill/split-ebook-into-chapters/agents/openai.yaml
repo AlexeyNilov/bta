@@ -1,0 +1,4 @@
+interface:
+  display_name: "Split Ebook Into Chapters"
+  short_description: "Split ebooks into TTS-ready chapter files"
+  default_prompt: "Use $split-ebook-into-chapters to split this ebook export into logical TTS-ready chapter files."
