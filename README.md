@@ -112,8 +112,6 @@ When the WAV chunks are ready, merge them into a single MP3:
 bash scripts/merge_wavs.sh ./output
 ```
 
-The merge script inserts two seconds of silence after each WAV chunk.
-
 ## References
 
 * For EPUB to text conversion: https://pandoc.org/
