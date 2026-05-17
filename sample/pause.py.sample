@@ -1,0 +1,100 @@
+"""
+From https://github.com/kyutai-labs/pocket-tts/issues/6
+"""
+
+def parse_text_with_pauses(raw: str):
+    """
+    Returns:
+      events: [("text", "hello"), ("pause", 1.0), ("text", "world"), ...]
+      pauses: metadata list with placeholder fields you can extend
+    """
+    
+    PAUSE_RE = re.compile(r"\[(\d+(?:\.\d+)?)s\]") #matches [1s], [1.0s], [0.25s] etc in the tts script
+    
+    events: List[Tuple[str, object]] = []
+    pauses: List[Dict[str, Any]] = []
+
+    cursor = 0
+    pause_index = 0
+
+    for m in PAUSE_RE.finditer(raw):
+        #Add preceding text chunk
+        chunk = raw[cursor:m.start()]
+        if chunk:
+            events.append(("text", chunk))
+
+        #Add pause
+        seconds = float(m.group(1))
+        events.append(("pause", seconds))
+        pauses.append({
+            "index": pause_index,
+            "seconds": seconds,
+            "start_char": m.start(),
+            "end_char": m.end(),
+        })
+        pause_index += 1
+
+        cursor = m.end()
+
+    #Add trailing text
+    tail = raw[cursor:]
+    if tail:
+        events.append(("text", tail))
+
+    return events, pauses
+
+def generate_audio_with_pauses(tts_model: TTSModel, voice_state, raw_text: str):
+    events, pauses = parse_text_with_pauses(raw_text)
+    sr = int(getattr(tts_model, "sample_rate"))
+    pieces = []
+    audio_dtype = None
+    audio_device = None
+
+    for kind, value in events:
+        if kind == "text":
+            chunk = str(value).strip()
+            if not chunk:
+                continue
+            #print("TTS CHUNK:", repr(chunk))
+            audio = tts_model.generate_audio(voice_state, chunk)
+            if audio_dtype is None:
+                audio_dtype = audio.dtype
+                audio_device = audio.device
+            pieces.append(audio)
+        elif kind == "pause":
+            seconds = float(value)
+            n = max(0, int(round(seconds * sr)))
+            #If no audio has been generated yet, pick a reasonable default.
+            dtype = audio_dtype or torch.float32
+            device = audio_device or torch.device("cpu")
+            pieces.append(torch.zeros(n, dtype=dtype, device=device))
+
+    if not pieces:
+        return torch.zeros(0, dtype=torch.float32), pauses
+    return torch.cat(pieces), pauses
+
+
+
+    print("Generating audio...")
+    try:
+        #use our new generate_audio_with_pauses instead of generate_audio()
+        audio_tensor, pauses = generate_audio_with_pauses(tts_model, voice_state, text)#the relevant line to change
+        #print("Pauses:", pauses)
+    except Exception as e:
+        print("Audio generation failed:", e)
+        sys.exit(1)
+
+    sample_rate = getattr(tts_model, "sample_rate", None) or getattr(tts_model, "sr", None) or 22050
+
+    try:
+        write_wav_from_tensor(audio_tensor, int(sample_rate), args.out)
+    except Exception as e:
+        print("Failed to write WAV:", e)
+        sys.exit(1)
+
+"""
+now finally in your prompt you may do something like this:
+
+[Xs] indicators could also be on their own line to separate paragraphs
+Hello. [2.0s] How are you? [3.0s] Cool, [2.25s] I think this worked. [1.0s]
+"""
