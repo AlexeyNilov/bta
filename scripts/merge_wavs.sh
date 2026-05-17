@@ -6,7 +6,7 @@ usage() {
 Usage: scripts/merge_wavs.sh <folder>
 
 Merges all WAV files directly inside <folder> into <folder>/<folder-name>.mp3,
-with 2 seconds of silence after each WAV file.
+with 3 seconds of silence after each WAV file and a 3 dB volume boost.
 
 Example:
   scripts/merge_wavs.sh ./output
@@ -49,7 +49,8 @@ require_command ffmpeg
 output_name=$(basename -- "$audio_dir")
 concat_list="$audio_dir/$output_name.txt"
 output_mp3="$audio_dir/$output_name.mp3"
-pause_seconds=2
+pause_seconds=3
+volume_boost=3dB
 
 shopt -s nullglob
 wav_files=("$audio_dir"/*.wav)
@@ -62,7 +63,7 @@ fi
 
 silence_dir=$(mktemp -d)
 trap 'rm -rf "$silence_dir"' EXIT
-silence_wav="$silence_dir/silence_2s.wav"
+silence_wav="$silence_dir/silence_3s.wav"
 
 echo "Creating ${pause_seconds}s silence segment"
 ffmpeg -y -stream_loop -1 -i "${wav_files[0]}" \
@@ -76,7 +77,8 @@ for wav_file in "${wav_files[@]}"; do
     printf "file '%s'\n" "$(concat_escape "$silence_wav")" >> "$concat_list"
 done
 
-echo "Combining WAV files into MP3: $output_mp3"
+echo "Combining WAV files into MP3 with ${volume_boost} volume boost: $output_mp3"
 ffmpeg -y -f concat -safe 0 -i "$concat_list" \
+    -af "volume=$volume_boost" \
     -c:a libmp3lame -q:a 2 \
     "$output_mp3"
