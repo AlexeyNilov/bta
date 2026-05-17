@@ -8,7 +8,6 @@ import html
 import re
 from pathlib import Path
 
-
 TOC_LINE = re.compile(
     r"^(?:\d+\.\s+)?(?:Identify the Mess|State Your Intent|State your Intent|Face Reality|"
     r"Choose a Direction|Measure the Distance|Play with Structure|Prepare to Adjust|"

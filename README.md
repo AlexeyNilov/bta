@@ -59,6 +59,15 @@ scripts/flow.sh book --no-play
 
 See [scripts/flow.sh](scripts/flow.sh) for the full EPUB-to-MP3 workflow.
 
+To merge an existing folder of WAV files into one MP3:
+
+```bash
+scripts/merge_wavs.sh ./output
+```
+
+The merged file is written inside that folder using the folder name, for example
+`output/output.mp3`.
+
 ## References
 
 * For EPUB to text conversion: https://pandoc.org/
