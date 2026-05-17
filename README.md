@@ -50,6 +50,15 @@ Generated files are written to `output/` as `book_000001.wav`,
 `book_000002.wav`, and so on. Conversion state is saved as
 `output/book.state.json` so an interrupted matching conversion can resume.
 
+Add inline pause tags to insert silence into generated audio:
+
+```markdown
+Hello. [1s] This starts after one second of silence.
+```
+
+Supported pause syntax is `[1s]`, `[1.5s]`, or `[0.25s]`. Pause tags are not
+spoken, and unsupported syntax is treated as ordinary text.
+
 ## Flow
 
 Think of the pipeline as three passes: extract the book into plain Markdown,
@@ -80,6 +89,10 @@ Useful Codex skills:
 The goal is not to make pretty Markdown. The goal is clean narration: text that
 sounds intentional when read aloud.
 
+Use pause tags when punctuation and paragraph breaks are not enough to shape the
+narration timing. For example, `[2s]` inserts two seconds of silence at that
+point in the generated chunk.
+
 ### 3. Render WAV Chunks
 
 Run `bta` on the prepared Markdown file:
@@ -98,6 +111,8 @@ When the WAV chunks are ready, merge them into a single MP3:
 ```bash
 bash scripts/merge_wavs.sh ./output
 ```
+
+The merge script inserts two seconds of silence after each WAV chunk.
 
 ## References
 

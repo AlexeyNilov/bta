@@ -85,6 +85,7 @@ def test_convert_accepts_local_markdown_file(capsys, monkeypatch, tmp_path):
 
 
 def test_convert_wires_configured_conversion_dependencies(monkeypatch, tmp_path):
+    monkeypatch.chdir(tmp_path)
     input_file = tmp_path / "book.md"
     input_file.write_text("# Book\n", encoding="utf-8")
     monkeypatch.setenv("BTA_CHUNK_TARGET_CHARS", "1200")
@@ -135,6 +136,7 @@ def test_convert_wires_configured_conversion_dependencies(monkeypatch, tmp_path)
 
 
 def test_convert_wires_parallel_conversion_without_parent_tts_model(monkeypatch, tmp_path):
+    monkeypatch.chdir(tmp_path)
     input_file = tmp_path / "book.md"
     input_file.write_text("# Book\n", encoding="utf-8")
     monkeypatch.setenv("BTA_TTS_WORKERS", "3")

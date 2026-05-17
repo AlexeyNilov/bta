@@ -152,7 +152,7 @@ def synthesize_chunks(
     written_chunks = 0
     for chunk_number in range(start_chunk_number, len(chunks) + 1):
         chunk_text_value = chunks[chunk_number - 1]
-        audio = synthesizer.synthesize(chunk_text_value, request.voice)
+        audio = synthesize_text(synthesizer, chunk_text_value, request.voice)
         writer.write(plan.wav_paths[chunk_number - 1], audio)
         save_progress(
             request=request,
@@ -262,9 +262,16 @@ def synthesize_chunk_with_pocket_tts(job: SynthesisJob) -> int:
     if _worker_synthesizer is None or _worker_writer is None:
         raise RuntimeError("Pocket TTS worker was not initialized")
 
-    audio = _worker_synthesizer.synthesize(job.text, job.voice)
+    audio = synthesize_text(_worker_synthesizer, job.text, job.voice)
     _worker_writer.write(job.output_path, audio)
     return job.chunk_number
+
+
+def synthesize_text(synthesizer: SpeechSynthesizer, text: str, voice: str) -> Any:
+    pause_aware_synthesize = getattr(synthesizer, "synthesize_with_pauses", None)
+    if pause_aware_synthesize is not None:
+        return pause_aware_synthesize(text, voice)
+    return synthesizer.synthesize(text, voice)
 
 
 def save_progress(

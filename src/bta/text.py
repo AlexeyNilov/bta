@@ -5,9 +5,11 @@ import re
 HTML_TAG_PATTERN = re.compile(r"<[^<>]*>", re.DOTALL)
 SENTENCE_PATTERN = re.compile(r".+?(?:[.!?]+[\"')\]]?(?=\s+|$)|$)", re.DOTALL)
 WHITESPACE_PATTERN = re.compile(r"[ \t\f\v]+")
+UTF8_BOM = "\ufeff"
 
 
 def clean_markdown_text(text: str) -> str:
+    text = text.removeprefix(UTF8_BOM)
     if not HTML_TAG_PATTERN.search(text):
         return text
 

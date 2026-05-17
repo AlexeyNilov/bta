@@ -3,7 +3,13 @@ from pathlib import Path
 
 import pytest
 
-from bta.conversion import ConversionRequest, convert_markdown, synthesize_chunks_parallel
+from bta.conversion import (
+    ConversionRequest,
+    SynthesisJob,
+    convert_markdown,
+    synthesize_chunk_with_pocket_tts,
+    synthesize_chunks_parallel,
+)
 from bta.output import build_conversion_state, hash_file, load_state, plan_output_paths, save_state
 
 
@@ -17,6 +23,16 @@ class FakeSynthesizer:
         if self.failure_on_call == len(self.calls):
             raise RuntimeError("synthesis failed")
         return f"audio-{len(self.calls)}".encode()
+
+
+class FakePauseAwareSynthesizer(FakeSynthesizer):
+    def __init__(self) -> None:
+        super().__init__()
+        self.pause_aware_calls: list[tuple[str, str]] = []
+
+    def synthesize_with_pauses(self, text: str, voice: str) -> bytes:
+        self.pause_aware_calls.append((text, voice))
+        return b"audio-with-pause"
 
 
 class FakeWavWriter:
@@ -79,6 +95,15 @@ class FakeExecutor:
         return self.futures_by_chunk[chunk_number]
 
 
+class FakePocketTtsWorker:
+    def __init__(self) -> None:
+        self.calls: list[tuple[str, str]] = []
+
+    def synthesize_with_pauses(self, text: str, voice: str) -> bytes:
+        self.calls.append((text, voice))
+        return b"worker-audio-with-pause"
+
+
 def test_convert_markdown_reports_current_chunk_of_total_chunks(tmp_path):
     input_path = write_input(tmp_path, "First sentence.\n\nSecond sentence.")
     progress_reporter = RecordingProgressReporter()
@@ -91,6 +116,42 @@ def test_convert_markdown_reports_current_chunk_of_total_chunks(tmp_path):
     )
 
     assert progress_reporter.calls == [(1, 2), (2, 2)]
+
+
+def test_convert_markdown_uses_pause_aware_synthesis_when_available(tmp_path):
+    input_path = write_input(tmp_path, "Hello [1s] world.")
+    synthesizer = FakePauseAwareSynthesizer()
+
+    convert_markdown(
+        request_for(input_path, tmp_path),
+        synthesizer=synthesizer,
+        writer=FakeWavWriter(),
+    )
+
+    assert synthesizer.calls == []
+    assert synthesizer.pause_aware_calls == [("Hello [1s] world.", "alba")]
+    assert (tmp_path / "output" / "book_000001.wav").read_bytes() == b"audio-with-pause"
+
+
+def test_parallel_worker_uses_pause_aware_synthesis(monkeypatch, tmp_path):
+    worker = FakePocketTtsWorker()
+    writer = FakeWavWriter()
+    monkeypatch.setattr("bta.conversion._worker_synthesizer", worker)
+    monkeypatch.setattr("bta.conversion._worker_writer", writer)
+    output_path = tmp_path / "chunk.wav"
+
+    chunk_number = synthesize_chunk_with_pocket_tts(
+        SynthesisJob(
+            chunk_number=7,
+            text="Hello [1s] world.",
+            voice="alba",
+            output_path=output_path,
+        )
+    )
+
+    assert chunk_number == 7
+    assert worker.calls == [("Hello [1s] world.", "alba")]
+    assert output_path.read_bytes() == b"worker-audio-with-pause"
 
 
 def test_convert_markdown_stops_on_synthesis_failure_and_keeps_successful_output(tmp_path):

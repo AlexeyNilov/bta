@@ -35,6 +35,12 @@ def test_clean_markdown_text_preserves_non_html_markdown_content():
     assert cleaned == source
 
 
+def test_clean_markdown_text_removes_utf8_bom_from_start_of_file():
+    cleaned = clean_markdown_text("\ufeff[3s]Chapter 02")
+
+    assert cleaned == "[3s]Chapter 02"
+
+
 def test_chunk_text_groups_paragraphs_up_to_target_character_count():
     source = "Alpha paragraph.\n\nBeta paragraph.\n\nGamma paragraph."
 

@@ -1,5 +1,7 @@
 from pathlib import Path
 
+import torch
+
 from bta.pocket_tts import PocketTtsSynthesizer, ScipyWavWriter
 
 
@@ -20,9 +22,15 @@ class FakeTTSModel:
         self.voice_calls.append(voice)
         return {"voice": voice}
 
-    def generate_audio(self, model_state: dict[str, str], text_to_generate: str) -> str:
+    def generate_audio(self, model_state: dict[str, str], text_to_generate: str) -> torch.Tensor:
         self.audio_calls.append((model_state, text_to_generate))
-        return f"audio for {text_to_generate}"
+        audio_by_text = {
+            "First chunk.": torch.tensor([1.0, 2.0]),
+            "Second chunk.": torch.tensor([3.0]),
+            "Hello": torch.tensor([1.0, 2.0]),
+            "world.": torch.tensor([3.0]),
+        }
+        return audio_by_text.get(text_to_generate, torch.tensor([9.0]))
 
 
 class FakeAudio:
@@ -58,8 +66,8 @@ def test_pocket_tts_synthesizer_loads_model_once_and_caches_voice_state(monkeypa
         ({"voice": "alba"}, "First chunk."),
         ({"voice": "alba"}, "Second chunk."),
     ]
-    assert first_audio == "audio for First chunk."
-    assert second_audio == "audio for Second chunk."
+    assert torch.equal(first_audio, torch.tensor([1.0, 2.0]))
+    assert torch.equal(second_audio, torch.tensor([3.0]))
     assert synthesizer.environ["HF_HUB_OFFLINE"] == "1"
 
 
@@ -83,6 +91,44 @@ def test_pocket_tts_synthesizer_loads_separate_voice_states(monkeypatch):
     synthesizer.synthesize("Second chunk.", "bruce")
 
     assert synthesizer.model.voice_calls == ["alba", "bruce"]
+
+
+def test_pocket_tts_synthesizer_inserts_silence_for_pause_tags(monkeypatch):
+    FakeTTSModel.load_calls = 0
+    monkeypatch.setattr("bta.pocket_tts.TTSModel", FakeTTSModel)
+    synthesizer = PocketTtsSynthesizer()
+
+    audio = synthesizer.synthesize_with_pauses("Hello [0.001s] world.", "alba")
+
+    assert synthesizer.model.audio_calls == [
+        ({"voice": "alba"}, "Hello"),
+        ({"voice": "alba"}, "world."),
+    ]
+    assert torch.equal(
+        audio, torch.cat([torch.tensor([1.0, 2.0]), torch.zeros(24), torch.tensor([3.0])])
+    )
+
+
+def test_pocket_tts_synthesizer_ignores_bom_before_leading_pause_tag(monkeypatch):
+    FakeTTSModel.load_calls = 0
+    monkeypatch.setattr("bta.pocket_tts.TTSModel", FakeTTSModel)
+    synthesizer = PocketTtsSynthesizer()
+
+    audio = synthesizer.synthesize_with_pauses("\ufeff[0.001s]Hello", "alba")
+
+    assert synthesizer.model.audio_calls == [({"voice": "alba"}, "Hello")]
+    assert torch.equal(audio, torch.cat([torch.zeros(24), torch.tensor([1.0, 2.0])]))
+
+
+def test_pocket_tts_synthesizer_returns_silence_for_pause_only_text(monkeypatch):
+    FakeTTSModel.load_calls = 0
+    monkeypatch.setattr("bta.pocket_tts.TTSModel", FakeTTSModel)
+    synthesizer = PocketTtsSynthesizer()
+
+    audio = synthesizer.synthesize_with_pauses("[0.001s]", "alba")
+
+    assert synthesizer.model.audio_calls == []
+    assert torch.equal(audio, torch.zeros(24))
 
 
 def test_scipy_wav_writer_writes_numpy_audio(tmp_path):
