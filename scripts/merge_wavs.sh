@@ -5,7 +5,8 @@ usage() {
     cat <<'USAGE'
 Usage: scripts/merge_wavs.sh <folder>
 
-Merges all WAV files directly inside <folder> into <folder>/<folder-name>.mp3.
+Merges all WAV files directly inside <folder> into <folder>/<folder-name>.mp3,
+with 2 seconds of silence after each WAV file.
 
 Example:
   scripts/merge_wavs.sh ./output
@@ -48,6 +49,7 @@ require_command ffmpeg
 output_name=$(basename -- "$audio_dir")
 concat_list="$audio_dir/$output_name.txt"
 output_mp3="$audio_dir/$output_name.mp3"
+pause_seconds=2
 
 shopt -s nullglob
 wav_files=("$audio_dir"/*.wav)
@@ -58,10 +60,20 @@ if [[ ${#wav_files[@]} -eq 0 ]]; then
     exit 1
 fi
 
+silence_dir=$(mktemp -d)
+trap 'rm -rf "$silence_dir"' EXIT
+silence_wav="$silence_dir/silence_2s.wav"
+
+echo "Creating ${pause_seconds}s silence segment"
+ffmpeg -y -stream_loop -1 -i "${wav_files[0]}" \
+    -t "$pause_seconds" -af volume=0 \
+    "$silence_wav"
+
 printf '' > "$concat_list"
 for wav_file in "${wav_files[@]}"; do
     absolute_wav=$(cd -- "$(dirname -- "$wav_file")" && pwd)/$(basename -- "$wav_file")
     printf "file '%s'\n" "$(concat_escape "$absolute_wav")" >> "$concat_list"
+    printf "file '%s'\n" "$(concat_escape "$silence_wav")" >> "$concat_list"
 done
 
 echo "Combining WAV files into MP3: $output_mp3"

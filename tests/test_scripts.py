@@ -17,7 +17,8 @@ def test_merge_wavs_merges_folder_wavs_in_filename_order(tmp_path):
     fake_ffmpeg.write_text(
         "#!/usr/bin/env bash\n"
         "set -euo pipefail\n"
-        'printf "%s\\n" "$@" > "$FFMPEG_ARGS_FILE"\n'
+        'printf "CALL\\n" >> "$FFMPEG_ARGS_FILE"\n'
+        'printf "%s\\n" "$@" >> "$FFMPEG_ARGS_FILE"\n'
         'touch "${@: -1}"\n',
         encoding="utf-8",
     )
@@ -38,10 +39,29 @@ def test_merge_wavs_merges_folder_wavs_in_filename_order(tmp_path):
 
     assert result.returncode == 0, result.stderr
     assert (audio_dir / "audio.mp3").exists()
-    ffmpeg_call = ffmpeg_args.read_text(encoding="utf-8").splitlines()
+    ffmpeg_calls = ffmpeg_args.read_text(encoding="utf-8").split("CALL\n")
+    silence_call = ffmpeg_calls[1].splitlines()
+    ffmpeg_call = ffmpeg_calls[2].splitlines()
     concat_list = Path(ffmpeg_call[ffmpeg_call.index("-i") + 1])
-    assert concat_list.read_text(encoding="utf-8").splitlines() == [
+    concat_lines = concat_list.read_text(encoding="utf-8").splitlines()
+    silence_file = concat_lines[1].removeprefix("file '").removesuffix("'")
+
+    assert silence_call == [
+        "-y",
+        "-stream_loop",
+        "-1",
+        "-i",
+        str(audio_dir / "a.wav"),
+        "-t",
+        "2",
+        "-af",
+        "volume=0",
+        silence_file,
+    ]
+    assert concat_lines == [
         f"file '{audio_dir / 'a.wav'}'",
+        f"file '{silence_file}'",
         f"file '{audio_dir / 'b.wav'}'",
+        f"file '{silence_file}'",
     ]
     assert ffmpeg_call[-1] == str(audio_dir / "audio.mp3")

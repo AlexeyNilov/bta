@@ -66,7 +66,8 @@ scripts/merge_wavs.sh ./output
 ```
 
 The merged file is written inside that folder using the folder name, for example
-`output/output.mp3`.
+`output/output.mp3`. The merge inserts 2 seconds of silence after each WAV file
+to create pauses between chapters.
 
 ## References
 
