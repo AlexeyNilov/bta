@@ -1,0 +1,4 @@
+interface:
+  display_name: "Add Pause Tags"
+  short_description: "Add BTA pause tags to Markdown audio scripts."
+  default_prompt: "Use $add-pause-tags to add BTA-compatible pause tags to this prepared Markdown."
