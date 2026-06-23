@@ -13,9 +13,9 @@ Supported BTA syntax is `[1s]`, `[1.5s]`, or `[0.25s]`. Unsupported pause text w
 
 ## Default Timing
 
-- Chapter-level headings: `[3s]`
-- Section-level headings: `[2s]`
-- Ordinary paragraphs: `[1s]`
+- Chapter-level headings: `[4s]`
+- Section-level headings: `[2.5s]`
+- Ordinary paragraphs: `[1.5s]`
 
 Use different timings if the user asks. Avoid adding pauses inside ordinary sentences unless the user explicitly wants line-level dramatic pacing.
 
