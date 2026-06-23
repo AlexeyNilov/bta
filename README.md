@@ -83,15 +83,12 @@ URLs.
 
 Useful Codex skills:
 
-* `split-ebook-into-chapters`
-* `ebook-export-cleanup`
+* `split-ebook-into-chapters` for cleanup and chaptering
+* `merge-chapters-into-md` for merging back
+* `add-pause-tags` for adding silence
 
 The goal is not to make pretty Markdown. The goal is clean narration: text that
 sounds intentional when read aloud.
-
-Use pause tags when punctuation and paragraph breaks are not enough to shape the
-narration timing. For example, `[2s]` inserts two seconds of silence at that
-point in the generated chunk.
 
 ### 3. Render WAV Chunks
 

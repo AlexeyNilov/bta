@@ -1,0 +1,4 @@
+interface:
+  display_name: "Merge Chapters"
+  short_description: "Merge ordered chapter Markdown files."
+  default_prompt: "Use $merge-chapters-into-md to merge chapter Markdown files into one document."
