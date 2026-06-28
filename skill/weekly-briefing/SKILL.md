@@ -1,13 +1,13 @@
 ---
 name: weekly-briefing
-description: Produce an analytical weekly briefing on international affairs, Valencia and Spain, economics, business, markets, technology, and AI. Use when Codex is asked to create, refresh, or save a past-7-days global affairs briefing, especially a magazine-style report written for educated generalists and saved as input/weekly_report.md.
+description: Produce an analytical weekly briefing on international affairs, Valencia and Spain, economics, business, markets, technology, AI, opportunities, and risks. Use when Codex is asked to create, refresh, or save a past-7-days global affairs briefing, especially a magazine-style report written for entrepreneurial generalists and saved as input/weekly_report.md.
 ---
 
 # Weekly Briefing
 
 ## Goal
 
-Write a concise, analytical weekly briefing that explains what mattered in the past 7 days, why it mattered, and what to watch next. The default output path is `input/weekly_report.md` unless the user names another file.
+Write a concise, analytical weekly briefing that explains what mattered in the past 7 days, why it mattered, where opportunities or risks may be forming, and what to watch next. The default output path is `input/weekly_report.md` unless the user names another file.
 
 Do not add links, the goal is to create text easily convertable to speech.
 
@@ -25,6 +25,8 @@ Do not add links, the goal is to create text easily convertable to speech.
 
 3. Select for lasting significance.
    - Prioritize developments likely to affect geopolitics, security, macro policy, capital allocation, technology strategy, supply chains, regulation, or institutional trust.
+   - Look for entrepreneurial signals: new constraints, regulatory shifts, bottlenecks, unmet demand, adoption curves, capital misallocation, local advantages, and incumbents under pressure.
+   - Include contrarian angles when evidence supports them, especially where consensus narratives may be too optimistic, too pessimistic, or missing second-order effects.
    - Avoid filling space with daily market moves, routine political theater, or single-company noise unless it signals a broader structural shift.
    - Include fewer, better-explained stories rather than comprehensive headline coverage.
 
@@ -69,6 +71,8 @@ Use this section order:
 
 ## The Bigger Picture
 
+## Opportunities & Risks
+
 ## Looking Ahead
 ```
 
@@ -76,7 +80,7 @@ Use this section order:
 
 ### Executive Summary
 
-Write 5-10 bullets highlighting the week's most important developments. Each bullet should combine event plus significance; avoid headline-only bullets.
+Write 5-10 bullets highlighting the week's most important developments. Each bullet should combine event plus significance; avoid headline-only bullets. Include at least one bullet that frames a notable opportunity and at least one that frames a notable risk.
 
 ### World Affairs
 
@@ -116,6 +120,21 @@ Cover important developments in AI/LLM, semiconductors, cybersecurity, software,
 
 Identify 3-5 themes connecting events across politics, economics, business, and technology. Explain how these trends reinforce or contradict one another.
 
+### Opportunities & Risks
+
+Identify 4-8 practical opportunities and risks suggested by the week's events. Write for an entrepreneurial reader who wants to notice where conditions are changing before they become obvious.
+
+For each item:
+
+- Name the opportunity or risk plainly
+- Explain the causal mechanism, not just the trend label
+- Distinguish what is known from what is a hypothesis
+- State what evidence would confirm or weaken the thesis
+
+Good items may involve business formation, market positioning, career bets, local Valencia or Spain opportunities, regulatory arbitrage, AI adoption, supply-chain changes, energy and infrastructure constraints, tourism and housing pressures, or capital-market risks.
+
+Use a mildly contrarian lens, but do not force contrarianism. A useful contrarian point should challenge a lazy consensus and explain why the common reading may be incomplete.
+
 ### Looking Ahead
 
 Identify the most important events, decisions, earnings, policy announcements, elections, product launches, or meetings expected in the coming week. For each, explain why it deserves attention.
@@ -125,6 +144,9 @@ Identify the most important events, decisions, earnings, policy announcements, e
 - Write like the editor of a weekly international affairs and economics magazine.
 - Assume an educated generalist reader.
 - Prefer depth over breadth.
+- Maintain an entrepreneurial lens: ask who gains leverage, who loses pricing power, what bottlenecks appear, and where incentives are changing.
+- Surface opportunities and risks without giving personalized financial, legal, or investment advice.
+- Be willing to be mildly contrarian, but only when the argument is evidence-based and falsifiable.
 - Explain trade-offs and second-order consequences.
 - Avoid false precision; name uncertainty where evidence is incomplete.
 - Do not use partisan labels as analysis.
