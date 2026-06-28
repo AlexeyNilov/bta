@@ -93,6 +93,35 @@ def test_pocket_tts_synthesizer_loads_separate_voice_states(monkeypatch):
     assert synthesizer.model.voice_calls == ["alba", "bruce"]
 
 
+def test_pocket_tts_synthesizer_expands_local_safetensors_voice_state(
+    monkeypatch,
+    tmp_path,
+):
+    FakeTTSModel.load_calls = 0
+    monkeypatch.setattr("bta.pocket_tts.TTSModel", FakeTTSModel)
+    monkeypatch.setenv("HOME", str(tmp_path))
+    voice_state_path = tmp_path / "voice" / "complex.safetensors"
+    voice_state_path.parent.mkdir()
+    voice_state_path.write_bytes(b"state")
+
+    synthesizer = PocketTtsSynthesizer()
+    synthesizer.synthesize("First chunk.", "~/voice/complex.safetensors")
+    synthesizer.synthesize("Second chunk.", "~/voice/complex.safetensors")
+
+    assert synthesizer.model.voice_calls == [str(voice_state_path)]
+
+
+def test_pocket_tts_synthesizer_leaves_huggingface_voice_prompt_unchanged(monkeypatch):
+    FakeTTSModel.load_calls = 0
+    monkeypatch.setattr("bta.pocket_tts.TTSModel", FakeTTSModel)
+    voice = "hf://kyutai/tts-voices/expresso/ex01-ex02_default_001_channel2_198s.wav"
+
+    synthesizer = PocketTtsSynthesizer()
+    synthesizer.synthesize("First chunk.", voice)
+
+    assert synthesizer.model.voice_calls == [voice]
+
+
 def test_pocket_tts_synthesizer_inserts_silence_for_pause_tags(monkeypatch):
     FakeTTSModel.load_calls = 0
     monkeypatch.setattr("bta.pocket_tts.TTSModel", FakeTTSModel)

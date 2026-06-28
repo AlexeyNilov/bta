@@ -27,12 +27,16 @@ Configuration is loaded from environment variables and optional `.env` files.
 BTA_CHUNK_TARGET_CHARS=2000
 BTA_TTS_WORKERS=4  # 4 gives the best result on 8 core CPU
 BTA_VOICE=alba
+# or use a local exported Pocket TTS voice state
+BTA_VOICE=voice/complex.safetensors
 ```
 
 `BTA_CHUNK_TARGET_CHARS` must be a positive integer. `BTA_TTS_WORKERS` controls
 how many independent Pocket TTS worker processes synthesize chunks concurrently
 and defaults to `1` to preserve sequential conversion behavior. `BTA_VOICE` is
-passed to Pocket TTS and defaults to `alba`.
+passed to Pocket TTS and defaults to `alba`. It can be a built-in Pocket TTS
+voice name, a local `.wav` prompt, a local exported `.safetensors` voice state,
+or a Hugging Face voice prompt URI.
 
 `bta` sets `HF_HUB_OFFLINE=1` by default before loading Pocket TTS so cached
 models do not trigger Hugging Face network checks on every run. For the first
@@ -114,4 +118,4 @@ bash scripts/merge_wavs.sh ./output
 * For EPUB to text conversion: https://pandoc.org/
 * For PDF to text conversion: https://github.com/run-llama/liteparse
 * TTS: https://github.com/kyutai-labs/pocket-tts
-* Voices: alba, bill_boerst, charles, eponine, jean, peter_yearsley, stuart_bell 
+* Built-in voices: alba, bill_boerst, charles, eponine, jean, peter_yearsley, stuart_bell

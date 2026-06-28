@@ -50,7 +50,9 @@ class PocketTtsSynthesizer:
 
     def get_voice_state(self, voice: str) -> Any:
         if voice not in self._voice_states:
-            self._voice_states[voice] = self.model.get_state_for_audio_prompt(voice)
+            self._voice_states[voice] = self.model.get_state_for_audio_prompt(
+                prompt_for_pocket_tts(voice)
+            )
         return self._voice_states[voice]
 
 
@@ -97,6 +99,22 @@ def silence_for_pause(
 
 def configure_huggingface_offline_mode(environ: MutableMapping[str, str]) -> None:
     environ.setdefault(HF_HUB_OFFLINE, "1")
+
+
+def prompt_for_pocket_tts(voice: str) -> str:
+    if is_remote_voice_prompt(voice):
+        return voice
+    if is_local_voice_file_prompt(voice):
+        return str(Path(voice).expanduser())
+    return voice
+
+
+def is_remote_voice_prompt(voice: str) -> bool:
+    return "://" in voice
+
+
+def is_local_voice_file_prompt(voice: str) -> bool:
+    return Path(voice).suffix.lower() in {".safetensors", ".wav"}
 
 
 def load_tts_model_class() -> Any:

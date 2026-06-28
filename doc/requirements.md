@@ -203,6 +203,11 @@ Python package.
 **When** generating speech audio, **the system shall** allow the Pocket TTS voice
 to be configured through `BTA_VOICE` loaded from environment-based configuration.
 
+#### REQ-035a: Support local Pocket TTS voice state files
+
+**When** `BTA_VOICE` points to a local `.safetensors` voice state file, **the
+system shall** pass that voice state prompt to Pocket TTS for speech generation.
+
 #### REQ-036: Use alba as the default voice
 
 **When** `BTA_VOICE` is not configured, **the system shall** use `alba` as the

@@ -270,6 +270,32 @@ must account for Pocket TTS transitive dependencies such as PyTorch and WAV
 writing support. Voice configuration must be validated as part of environment
 configuration.
 
+### 2026-06-28: Reuse BTA_VOICE for exported Pocket TTS voice states
+
+**Status:** Accepted
+
+**Context:** Pocket TTS can export a voice prompt state to a `.safetensors` file
+and later load that file through the same `get_state_for_audio_prompt` API used
+for built-in voices and audio prompts. The user prepared `voice/complex.safetensors`
+for audiobook generation.
+
+**Decision:** `BTA_VOICE` remains the single voice configuration setting. It may
+contain a built-in Pocket TTS voice name, a local `.wav` prompt, a local
+`.safetensors` voice state, or a Hugging Face voice prompt URI. Local file
+prompts are expanded before they are passed to Pocket TTS, while remote prompt
+URIs are left unchanged.
+
+**Alternatives considered:** A separate `BTA_VOICE_STATE_PATH` setting would make
+custom voices explicit, but it would duplicate Pocket TTS' single prompt API and
+expand the public configuration surface without adding behavior. Adding strict
+file-existence validation could catch typos earlier, but it would risk rejecting
+valid prompt forms that Pocket TTS itself supports.
+
+**Consequences:** Existing conversions keep working with `alba` by default.
+Resume matching continues to use the configured `BTA_VOICE` string, so changing
+from a built-in voice to a `.safetensors` file starts a fresh conversion instead
+of resuming incompatible audio output.
+
 ### 2026-05-12: Optimize first for audiobook creation
 
 **Status:** Accepted
