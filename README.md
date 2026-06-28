@@ -113,6 +113,12 @@ When the WAV chunks are ready, merge them into a single MP3:
 bash scripts/merge_wavs.sh ./output
 ```
 
+## To export voice
+
+```text
+pocket-tts export-voice ~/Downloads/some_file.mp3 voice/some_voice.safetensors
+```
+
 ## References
 
 * For EPUB to text conversion: https://pandoc.org/
