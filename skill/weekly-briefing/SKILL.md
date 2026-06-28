@@ -39,6 +39,15 @@ Do not add links, the goal is to create text easily convertable to speech.
    - Define technical terms briefly on first use.
    - Remove clickbait, partisan framing, sensational language, and unsupported predictions.
 
+6. Convert to mp3
+
+```bash
+BTA_VOICE=voice/news.safetensors bta convert input/weekly_report.md
+bash scripts/merge_wavs.sh ./output
+mv output/output.mp3 output/weekly_report.mp3
+rm output/*.wav
+```
+
 ## Required Structure
 
 Use this section order:
