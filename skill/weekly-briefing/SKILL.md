@@ -1,6 +1,6 @@
 ---
 name: weekly-briefing
-description: Produce an analytical weekly briefing on international affairs, economics, business, markets, technology, and AI. Use when Codex is asked to create, refresh, or save a past-7-days global affairs briefing, especially a magazine-style report written for educated generalists and saved as input/weekly_report.md.
+description: Produce an analytical weekly briefing on international affairs, Valencia and Spain, economics, business, markets, technology, and AI. Use when Codex is asked to create, refresh, or save a past-7-days global affairs briefing, especially a magazine-style report written for educated generalists and saved as input/weekly_report.md.
 ---
 
 # Weekly Briefing
@@ -59,6 +59,8 @@ Use this section order:
 
 ## World Affairs
 
+## Valencia & Spain
+
 ## Business & Markets
 
 ## Economics
@@ -83,6 +85,20 @@ Cover major geopolitical events, diplomacy, conflicts, elections, international 
 - What happened
 - Why it matters
 - What could happen next
+
+### Valencia & Spain
+
+Cover the most consequential local and national developments affecting Valencia, the Valencian Community, and Spain.
+
+Include local stories when they have civic, economic, social, environmental, infrastructure, housing, tourism, technology, business, cultural, or policy significance. Connect local developments to wider Spanish, European, or global trends when useful, but do not force a global angle.
+
+For each selected story, explain:
+
+- What happened locally or nationally
+- Why it matters for people or institutions in Valencia and Spain
+- What could happen next
+
+If the week is genuinely quiet in Valencia, say so briefly and focus the section on the most relevant Spain-wide developments instead.
 
 ### Business & Markets
 
