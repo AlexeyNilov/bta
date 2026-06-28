@@ -1,0 +1,4 @@
+interface:
+  display_name: "Weekly Briefing"
+  short_description: "Create analytical weekly global briefings"
+  default_prompt: "Use $weekly-briefing to produce this week's international affairs and economics briefing."
