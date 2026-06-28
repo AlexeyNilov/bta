@@ -7,7 +7,7 @@ description: Produce an analytical weekly briefing on international affairs, eco
 
 ## Goal
 
-Write a concise, analytical weekly magazine briefing that explains what mattered in the past 7 days, why it mattered, and what to watch next. The default output path is `input/weekly_report.md` unless the user names another file.
+Write a concise, analytical weekly briefing that explains what mattered in the past 7 days, why it mattered, and what to watch next. The default output path is `input/weekly_report.md` unless the user names another file.
 
 Do not add links, the goal is to create text easily convertable to speech.
 
@@ -42,7 +42,7 @@ Do not add links, the goal is to create text easily convertable to speech.
 6. Convert to mp3
 
 ```bash
-BTA_VOICE=voice/news.safetensors bta convert input/weekly_report.md
+BTA_VOICE=charles bta convert input/weekly_report.md
 bash scripts/merge_wavs.sh ./output
 mv output/output.mp3 output/weekly_report.mp3
 rm output/*.wav
@@ -94,7 +94,7 @@ Explain major macroeconomic developments, including inflation, interest rates, c
 
 ### Technology & AI
 
-Cover important developments in AI/LLM, semiconductors, cybersecurity, software, major technology companies, and scientific breakthroughs. Prioritize developments likely to shape the next several years.
+Cover important developments in AI/LLM, semiconductors, cybersecurity, software, major technology companies, and scientific breakthroughs. Prioritize developments likely to shape the next several months.
 
 ### The Bigger Picture
 
@@ -122,6 +122,6 @@ Supported syntax is `[1s]`, `[1.5s]`, or `[0.25s]`. Unsupported pause text will 
 
 ### Default Timing
 
-- Chapter-level headings: `[4s]`
-- Section-level headings: `[2.5s]`
+- Chapter-level headings: `[2s]`
+- Section-level headings: `[2s]`
 - Ordinary paragraphs: `[1.5s]`
